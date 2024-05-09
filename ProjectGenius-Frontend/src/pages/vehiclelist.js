@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { getAllVehicle } from "../actions/adminAction";
+import { displayBusAllocation, getAllVehicle, viewDriver, viewStudent, viewTeacher } from "../actions/adminAction";
 import Sidebar from "./components/sidebar";
 
 import { useNavigate , useParams} from "react-router-dom";
 
 //react confirm pop-up package
+
 import "react-alert-confirm/lib/style.css";
 import AlertConfirm, { Button } from "react-alert-confirm";
 
@@ -17,16 +18,22 @@ import toastAlert from "../lib/toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEllipsis,
-  faMoneyCheck,
   faSchool,
-  faSort,
 } from "@fortawesome/free-solid-svg-icons";
+import DriverInfo from "./components/driverinfo";
+import VehicleInfo from "./components/vehicleinfo";
 
 const VehicleList = () => {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
   const [loaderView, setLoaderView] = useState(true);
+  const[vehicleDetails,setvehicleDetails] = useState({});
+  const [showVehicleInfo, setshowVehicleInfo] = useState(false);
+  const [teacherDisplay, setteacherDisplay] = useState({})
+  const [studentDisplay, setstudentDisplay] = useState({})
+  const [driverDisplay, setdriverDisplay] = useState({})
+  const [busAllocateDisplay, setbusAllocateDisplay] = useState({})
 
   const getData = async () => {
     try {
@@ -52,6 +59,8 @@ const VehicleList = () => {
   const editVehicle = async (Id) => {
     navigate(`/vehicle-edit/${Id}`);
   };
+
+
 
   const deleteVehicle = async (Id) => {
     try {
@@ -79,6 +88,28 @@ const VehicleList = () => {
   const routeAllocation = (Id) => {
     navigate(`/route-allocate/${Id}`)
   }
+
+ 
+  const handleDriverInfo =async (id) => {
+    const teacher = await viewTeacher();
+    const student = await viewStudent();
+    const driver = await viewDriver()
+    const busAllocate = await displayBusAllocation()
+    const teacherData = teacher.result
+    const studentData = student.result
+    const driverDisplay = driver.result
+    const busDisplay = busAllocate.result
+
+    let vehicleDetails2 = data.find((eachItem) => eachItem.vehicleNumber === id);
+    
+      setvehicleDetails(vehicleDetails2);
+      setteacherDisplay(teacherData);
+      setstudentDisplay(studentData);
+      setdriverDisplay(driverDisplay)
+      setbusAllocateDisplay(busDisplay)
+      setshowVehicleInfo(true);
+    
+  };
 
   const renderUserView = () => {
     if (loaderView) {
@@ -118,7 +149,12 @@ const VehicleList = () => {
                   return (
                     <tr className="std-row" key={key}>
                       <td>{key + 1}</td>
-                      <td>{item.vehicleNumber}</td>
+                      <span
+                          key={key}
+                          onClick={() => handleDriverInfo(item.vehicleNumber)}
+                        >
+                          {item.vehicleNumber}
+                        </span>
                       <td>{item.vehicleType}</td>
                       <td>{item.vehicleRegisterNumber.toUpperCase()}</td>
                       <td>{item.manufacturer.toUpperCase()}</td>
@@ -205,24 +241,19 @@ const VehicleList = () => {
           <div className="l-header">
             <p>Vehicle Details</p>
           </div>
-          <div className="middle-header-right">
-            <input
-              type="search"
-              placeholder="search"
-              //   onChange={handleSearchInput}
-              //   value={userSearchInput}
-            />
-          </div>
         </div>
         {renderUserView()}
       </div>
-      {/* {showDriverInfo && (
-            <DriverInfo
-              IMAGE_URL={IMAGE_URL}
-              driverDetails={clickedDriverDetails}
-              toggleDriverInfo={toggleDriverInfo}
+      {showVehicleInfo && (
+            <VehicleInfo
+              teacherDetails = {teacherDisplay}
+              studentDetails={studentDisplay}
+              driverDetails={driverDisplay}
+              vehicleDetails={vehicleDetails}
+              busAllocateDetails={busAllocateDisplay}
+              setshowVehicleInfo={setshowVehicleInfo}
             />
-          )} */}
+          )}
     </div>
   );
 };

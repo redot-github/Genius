@@ -15,7 +15,7 @@ import { ArrowRightAltOutlined } from "@mui/icons-material";
 //import Actions
 import { viewStudent, deleteStudent } from "../actions/adminAction";
 //impotr Components
-import StudentInfo from './components/studentinfo.js';
+import StudentInfo from './components/studentInfo.js';
 //import Lib
 import toastAlert from "../lib/toast";
 

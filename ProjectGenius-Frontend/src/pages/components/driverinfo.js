@@ -7,6 +7,7 @@ const DriverInfo = (props) => {
   const { driverDetails, toggleDriverInfo, IMAGE_URL } = props
   //destructuring of studentDetails
   const { name, role, licenceexpirydate, licencetype, driverphoto,licencenumber , driverId } = driverDetails
+  console.log(driverDetails,'driver........ ');
  
   return (
 
@@ -17,7 +18,7 @@ const DriverInfo = (props) => {
             <img src={`${IMAGE_URL}/${driverphoto}`} alt="" />
           </div>
           <div className="std-name">
-            <span>{name}({role})</span>
+            <span>{driverDetails.name}({role})</span>
           </div>
           <div className="std-history">
           <div className="std-name">

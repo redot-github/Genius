@@ -29,12 +29,14 @@ const admissionSchema = new Schema ({
     'mothername':String,
     'fatherphonenumber':Number,
     'motherphonenumber': Number,
+    'vehicleRegisterNumber' : String,
+    'vehicleRoute' : String,
     'doj':String,
     'active':{
         type: Number,
         default: 1
     },
-    'feesamount':Number,
+    // 'feesamount':Number,
     'section' : {
         type : String,
         ref : 'groupsection'

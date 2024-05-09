@@ -135,6 +135,50 @@ const dailyattendance = async (req, res) => {
         return res.status(500).json({ 'status': false, 'message': 'Error on the Server' });
     }
 }
+
+const dailyAttendanceUpdate = async (req, res) => {
+    const id = req.params.id;
+    const studentIdToUpdate = req.body.studentId; // Assuming you're sending the studentId in the request body
+    const newStatus = req.body.status; // Assuming you're sending the new status in the request body
+    const attendanceDate = req.body.date
+    console.log(attendanceDate,'date....');
+
+    try {
+        if (!id || !studentIdToUpdate || !newStatus) {
+            return res.status(400).json({ status: false, message: 'Missing required parameters' });
+        }
+
+        let updateAttendance = await Attendance.findOneAndUpdate(   
+            { _id:id, admissiongrade: req.body.admissiongrade, section: req.body.section, date: attendanceDate, 'attendance.studentId': studentIdToUpdate },
+            { $set: { 'attendance.$.status': newStatus } },
+            { new: true }
+        );
+            console.log(updateAttendance,'updated Status...');
+        if (updateAttendance) {
+            return res.status(200).json({ status: true, message: 'Attendance updated successfully', result: updateAttendance });
+        }
+        return res.status(404).json({ status: false, message: "Attendance not updated" });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ status: false, message: "Internal Server Error" });
+    }
+};
+
+const displayAttendance = async(req,res)=>{
+    let dis
+    try {
+        dis = await Attendance.find()
+
+    } catch (err) {
+        console.log(err);
+    }
+    if(dis){
+        return res.status(200).json({status:true, message:"Attendance viewed successfully",result:dis})
+    }
+     return res.status(404).json({status:false,message:'Attendance not found'})
+}
+
+
 const createmarksheet = async (req, res) => {
     try {
         const marksheetData = new MarkSheet({
@@ -213,5 +257,7 @@ module.exports = {
     findmarksheetforanalysis,
     updatemarksheet,
     forgetpassword,
-    resetpassword
+    resetpassword,
+    dailyAttendanceUpdate,
+    displayAttendance
 }

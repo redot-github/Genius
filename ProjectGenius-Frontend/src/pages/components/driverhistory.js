@@ -3,17 +3,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faUpload } from '@fortawesome/free-solid-svg-icons';
 
 const DriverHistory = (props) => {
-    const { formValue, setFormValue, handlePreClick, handleSubmit } = props
+    const { formValue, setFormValue, handlePreClick, handleNextClick } = props
 
     const [fileErrorMsg, setFileErrorMsg] = useState('');
+
 
     const triggerPreviousForm = () => {
         handlePreClick()
     }
 
-    const triggerSubmitAction = () => {
-        handleSubmit()
-    }
+    const triggerNextForm = () => {
+        handleNextClick()
+      }
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -57,7 +59,7 @@ const DriverHistory = (props) => {
 
     const isButtonDisable = (role !== "" && higherqualification !== "" && drivingexperience !== "" && bloodgroup !== ""  && licencephoto !== "");
     
-    const isRoleselected = (role === "Attendar")
+    const isRoleselected = (role === "Attender")
     return (
         <>
             <div className="teacher-details" style={{ minHeight: 420 }}>
@@ -73,7 +75,7 @@ const DriverHistory = (props) => {
                         <select name="role" value={role} onChange={handleChange}>
                             <option />
                             <option>Driver</option>
-                            <option>Attendar</option>
+                            <option>Attender</option>
                         </select>
                     </div>
                     <div className="teach-box">
@@ -164,12 +166,14 @@ const DriverHistory = (props) => {
                     <FontAwesomeIcon icon={faArrowLeft} className='myarrow' />
                     Previous
                 </button>
-                <button type="button" onClick={triggerSubmitAction}
-                    disabled={!isButtonDisable}
-                    style={{ backgroundColor: isButtonDisable ? '#ff80a6' : 'gray' }}
-                >
-                    Submit
-                </button>
+                <button
+        onClick={triggerNextForm}
+        disabled={!isButtonDisable}
+        style={{ backgroundColor: isButtonDisable ? '#ff80a6' : 'gray' }}
+      >
+        Next
+        <img src="images/arrow.png" alt="" />
+      </button>
             </div>
         </>
     )

@@ -143,6 +143,27 @@ export const Dailyattendance = async (Data) => {
     }
 }
 }
+
+
+
+export const updateDailyattendance = async (Data) => {
+
+    try {
+        const respData = await axios.put(`/update-attendance/${Data.id}/${Data.studentId}`, Data);
+        return {
+            'status': respData.data.status,
+            'message': respData.data.message,
+            'result': respData.data.result,
+        }
+    } catch (err) {
+        return {
+            'status': err.response.data.status,
+            'message': err.response.data.message,
+    }
+}
+}
+
+
 export const findsectionformarks = async (Data) => {
 
     try {
@@ -239,5 +260,23 @@ export const updatemarksheet = async (Data) => {
             'status': err.response.data.status,
             'message': err.response.data.message,
     }
+}
+}
+
+export const displayAttendanceData = async () => {
+
+    try {
+        let respData = await axios({
+            'url': '/displayAttendance',
+            'method': 'get',
+            // params:Data
+        })
+        return {
+            'status': respData.data.status,
+            'message': respData.data.message,
+            'result':respData.data.result,
+        }
+    } catch (err) {
+       console.log(err)
 }
 }

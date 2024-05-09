@@ -32,7 +32,7 @@ const TeacherList = () => {
   const [provideAttendance, setProvideAttendance] = useState(false);
   const [attendanceRecord, setAttendance] = useState(initialAttendance);
   const [viewAttendance, setviewAttendance] = useState("");
-
+  // const [first, setfirst] = useState(second)
   const [selectAll, setSelectAll] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   const [multiOption, setMultiOption] = useState('')
@@ -533,6 +533,7 @@ const TeacherList = () => {
             <table className="tchr-info">
               <thead>
                 <tr>
+                  <th>S.No</th>
                   <th>Name</th>
                   <th>Teacher ID</th>
                   <th>Grade</th>
@@ -561,8 +562,9 @@ const TeacherList = () => {
                       ? `${isClassTeacher.className}-${isClassTeacher.section}`
                       : "-";
                     return (
-                      <tr className="tchr-row" onclick="infos()" key={key}>
-                        <td className="teacherprofile">
+                      <tr className="std-row" onclick="infos()" key={key}>
+                        <td >{key+1}</td>
+                        <td className="profile">
                           <img
                             src={`${IMAGE_URL}/${item.teacherphoto}`}
                             e
@@ -582,7 +584,7 @@ const TeacherList = () => {
                         </td>
                         <td>+91{item.phoneNumber}</td>
                         <td>
-                          <span className="rupee">₹122345</span>
+                          <span className="rupee">{item.currentsalary}</span>
                         </td>
                         <td>
                           <span className="due2">Paid</span>

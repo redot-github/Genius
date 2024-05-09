@@ -54,9 +54,9 @@ const DriverPersonal = (props) => {
     }
   }
 
-  const { firstName, dob, maritalstatus, placeofbirth, lastName, age, currentsalary, driverphoto } = formValue
+  const { firstName, dob, maritalstatus, placeofbirth, lastName, age,  driverphoto } = formValue
 
-  const isButtonDisable = (firstName !== "" && lastName !== "" && dob !== "" && age !== "" && maritalstatus !== "" && currentsalary !== "" && placeofbirth !== "" && driverphoto !== "");
+  const isButtonDisable = (firstName !== "" && lastName !== "" && dob !== "" && age !== "" && maritalstatus !== "" && placeofbirth !== "" && driverphoto !== "");
   return (
     <>
       <div className="teacher-details">
@@ -105,13 +105,6 @@ const DriverPersonal = (props) => {
               <option>Widowed</option>
               <option>Divorced</option>
             </select>
-          </div>
-          <div className="teach-box">
-            <label htmlFor="">
-              Current Salary<sup>*</sup>
-            </label>
-            <input type="text" name="currentsalary" value={currentsalary} onChange={handleChange} maxLength={10} onFocus={() => setFocusOnSalary(true)} onBlur={() => setFocusOnSalary(false)} />
-            {onFocusSalary && currentsalary.length >= 10 &&<span className='text-error'>Reached max characters limit 10</span>}
           </div>
           <div className="teach-box">
             <label htmlFor="">

@@ -25,6 +25,15 @@ const driveradmissionSchema = new Schema ({
     'licencetype':String,
     'licencenumber':String,
     'licencephoto':String,
+    'grossSalary': String,
+    'dearnessallowance':String,
+    'dearnessallowanceAmount':String,
+    'medicalallowance':String,
+    'medicalallowanceAmount':String,
+    'hraAllowance':String,
+    'hraAllowanceAmount':String,
+    'vehicleRegisterNumber':String,
+    'vehicleRoute':String,
     'active':{
         type: Number,
         default: 1

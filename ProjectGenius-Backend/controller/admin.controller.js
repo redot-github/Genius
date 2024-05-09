@@ -14,13 +14,13 @@ const GroupSection = require("../models/groupsection");
 const ClassAllocate = require("../models/classallocation");
 const TeacherAttendance = require("../models/teacherattendance");
 const DriverAdmission = require("../models/driver");
+const BusAllocationModel = require("../models/busallocation");
 
 // config
 const config = require("../config");
 
 // lib
 const sendMail = require("../lib/emailGateway");
-const { findOne } = require("../models/teachersignup");
 
 //controll fuctions
 const createadmin = async (req, res) => {
@@ -244,6 +244,8 @@ const registerStudent = async (req, res) => {
       mothername: req.body.mothername,
       fatherphonenumber: req.body.fatherphonenumber,
       motherphonenumber: req.body.motherphonenumber,
+      vehicleRoute:req.body.vehicleRoute,
+      vehicleRegisterNumber:req.body.vehicleRegisterNumber,
       doj: formattedDate,
       feesamount: FeesAmount,
     });
@@ -360,6 +362,8 @@ const updateStudent = async (req, res) => {
       mothername: req.body.mothername,
       fatherphonenumber: req.body.fatherphonenumber,
       motherphonenumber: req.body.motherphonenumber,
+      vehicleRoute:req.body.vehicleRoute,
+      vehicleRegisterNumber:req.body.vehicleRegisterNumber,
       feesamount: FeesAmount,
     };
     if (!isEmpty(req.files) && req.files.photo && req.files.photo.length > 0) {
@@ -385,6 +389,17 @@ const updateStudent = async (req, res) => {
   }
 };
 const createFeeSetup = async (req, res) => {
+  const {admissiongrade}= req.body
+  let existingGrade;
+  try{
+    existingGrade = await FeeSetup.findOne({admissiongrade:admissiongrade})
+  }
+  catch(err){
+    console.log(err);
+  }
+  if(existingGrade){
+    return res.status(404).json({status:false, message:'Admission grade already exists'})
+  }
   try {
     //calculate total fees per gradewise
     const term1 = parseInt(req.body.term1, 10);
@@ -794,51 +809,76 @@ const feestatus = async (req, res) => {
   }
 };
 const registerTeacher = async (req, res) => {
-  const maxTeacher = await TeacherAdmission.findOne({}, { teacherId: 1 }).sort({
-    teacherId: -1,
-  });
-  let nextTeacherId = "T0001";
+  try {
+    const maxTeacher = await TeacherAdmission.findOne({}, { teacherId: 1 }).sort({
+      teacherId: -1,
+    });
 
-  if (maxTeacher && maxTeacher.teacherId) {
-    const currentMaxId = maxTeacher.teacherId;
-    const seriesNumber = parseInt(currentMaxId.substring(1), 10) + 1;
-    nextTeacherId = `T${seriesNumber.toString().padStart(4, "0")}`;
+    let nextTeacherId = "T0001";
+
+    if (maxTeacher && maxTeacher.teacherId) {
+      const currentMaxId = maxTeacher.teacherId;
+      const seriesNumber = parseInt(currentMaxId.substring(1), 10) + 1;
+      nextTeacherId = `T${seriesNumber.toString().padStart(4, "0")}`;
+    }
+ 
+    console.log("First name:", req.body.firstName);
+    console.log("Last name:", req.body.lastName);
+    console.log("Request Body:", req.body);
+
+
+
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const FullName = `${firstName} ${lastName}`;
+
+
+    let newDoc = new TeacherAdmission({
+      teacherId: nextTeacherId,
+      name: FullName,
+      dob: req.body.dob,
+      age: req.body.age,
+      teachingexperience: req.body.teachingexperience,
+      email: req.body.email,
+      teacherphoto: req.files && req.files.teacherphoto[0].filename,
+      emergencycontactNumber: req.body.emergencycontactNumber,
+      phoneNumber: req.body.phoneNumber,
+      whatsappNumber: req.body.whatsappNumber,
+      teachersignature: req.files && req.files.teachersignature[0].filename,
+      vaccination: req.body.vaccination,
+      placeofbirth: req.body.placeofbirth,
+      aadhaarNumber: req.body.aadhaarNumber,
+      permanentaddress: req.body.permanentaddress,
+      temporaryaddress: req.body.temporaryaddress,
+      bloodgroup: req.body.bloodgroup,
+      higherqualification: req.body.higherqualification,
+      maritalstatus: req.body.maritalstatus,
+      teachingcertificates: req.body.teachingcertificates,
+      subjects: req.body.subjects,
+      fatherphonenumber: req.body.fatherphonenumber,
+      motherphonenumber: req.body.motherphonenumber,
+      currentsalary: req.body.currentsalary,
+      grossSalary: req.body.grossSalary,
+      hraAllowance: req.body.hraAllowance,
+      hraAllowanceAmount: req.body.hraAllowanceAmount,
+      dearnessallowance: req.body.dearnessallowance,
+      dearnessallowanceAmount: req.body.dearnessallowanceAmount,
+      medicalallowance: req.body.medicalallowance,
+      medicalallowanceAmount: req.body.medicalallowanceAmount,
+      vehicleRegisterNumber: req.body.vehicleRegisterNumber,
+      vehicleRoute: req.body.vehicleRoute
+    });
+
+    await newDoc.save();
+    return res
+      .status(200)
+      .json({ status: true, message: " Register successfully" });
+  } catch (error) {
+    console.error("Error in registerTeacher:", error);
+    return res.status(500).json({ status: false, message: "Error registering teacher" });
   }
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  let FullName = `${firstName} ${lastName}`;
-  let newDoc = new TeacherAdmission({
-    teacherId: nextTeacherId,
-    name: FullName,
-    dob: req.body.dob,
-    age: req.body.age,
-    teachingexperience: req.body.teachingexperience,
-    email: req.body.email,
-    teacherphoto: req.files.teacherphoto[0].filename,
-    emergencycontactNumber: req.body.emergencycontactNumber,
-    phoneNumber: req.body.phoneNumber,
-    whatsappNumber: req.body.whatsappNumber,
-    teachersignature: req.files.teachersignature[0].filename,
-    vaccination: req.body.vaccination,
-    placeofbirth: req.body.placeofbirth,
-    aadhaarNumber: req.body.aadhaarNumber,
-    permanentaddress: req.body.permanentaddress,
-    temporaryaddress: req.body.temporaryaddress,
-    bloodgroup: req.body.bloodgroup,
-    higherqualification: req.body.higherqualification,
-    maritalstatus: req.body.maritalstatus,
-    teachingcertificates: req.body.teachingcertificates,
-    subjects: req.body.subjects,
-    fatherphonenumber: req.body.fatherphonenumber,
-    motherphonenumber: req.body.motherphonenumber,
-    currentsalary: req.body.currentsalary,
-  });
-
-  await newDoc.save();
-  return res
-    .status(200)
-    .json({ status: true, message: " Register successfully" });
 };
+
 const teacheraadhaarValid = async (req, res) => {
   try {
     let checkaadhaarNo = await TeacherAdmission.find(
@@ -898,6 +938,67 @@ const deleteTeacher = async (req, res) => {
       .json({ status: false, message: "Internal Server Error" });
   }
 };
+
+// const updateTeacher = async (req, res) => {
+//   try {
+//     const firstName = req.body.firstName;
+//     const lastName = req.body.lastName;
+//     let FullName = `${firstName} ${lastName}`;
+//     let updateDoc = {
+//       name: FullName,
+//       dob: req.body.dob,
+//       age: req.body.age,
+//       teachingexperience: req.body.teachingexperience,
+//       email: req.body.email,
+//       emergencycontactNumber: req.body.emergencycontactNumber,
+//       phoneNumber: req.body.phoneNumber,
+//       whatsappNumber: req.body.whatsappNumber,
+//       vaccination: req.body.vaccination,
+//       placeofbirth: req.body.placeofbirth,
+//       aadhaarNumber: req.body.aadhaarNumber,
+//       permanentaddress: req.body.permanentaddress,
+//       temporaryaddress: req.body.temporaryaddress,
+//       bloodgroup: req.body.bloodgroup,
+//       higherqualification: req.body.higherqualification,
+//       maritalstatus: req.body.maritalstatus,
+//       teachingcertificates: req.body.teachingcertificates,
+//       subjects: req.body.subjects,
+//       fatherphonenumber: req.body.fatherphonenumber,
+//       motherphonenumber: req.body.motherphonenumber,
+//       currentsalary: req.body.currentsalary,
+//     };
+
+//     if (
+//       !isEmpty(req.files) &&
+//       req.files.teacherphoto &&
+//       req.files.teacherphoto.length > 0
+//     ) {
+//       updateDoc.teacherphoto = req.files.teacherphoto[0].filename;
+//     }
+
+//     if (
+//       !isEmpty(req.files) &&
+//       req.files.teachersignature &&
+//       req.files.teachersignature.length > 0
+//     ) {
+//       updateDoc.teachersignature = req.files.teachersignature[0].filename;
+//     }
+
+//     let userData = await TeacherAdmission.findOneAndUpdate(
+//       { _id: req.body.Id },
+//       { $set: updateDoc },
+//       { new: true }
+//     );
+//     console.log(userData, ".....user");
+//     return res
+//       .status(200)
+//       .json({ status: true, message: "Data Updated successfully" });
+//   } catch (err) {
+//     console.log(err, "--err");
+//     return res.status(500).json({ status: false, message: "error on server" });
+//   }
+// };
+
 const updateTeacher = async (req, res) => {
   try {
     const firstName = req.body.firstName;
@@ -925,6 +1026,15 @@ const updateTeacher = async (req, res) => {
       fatherphonenumber: req.body.fatherphonenumber,
       motherphonenumber: req.body.motherphonenumber,
       currentsalary: req.body.currentsalary,
+      grossSalary: req.body.grossSalary,
+      hraAllowance: req.body.hraAllowance,
+      hraAllowanceAmount: req.body.hraAllowanceAmount,
+      dearnessallowance: req.body.dearnessallowance,
+      dearnessallowanceAmount: req.body.dearnessallowanceAmount,
+      medicalallowance: req.body.medicalallowance,
+      medicalallowanceAmount: req.body.medicalallowanceAmount,
+      vehicleRegisterNumber: req.body.vehicleRegisterNumber,
+      vehicleRoute: req.body.vehicleRoute
     };
 
     if (
@@ -957,6 +1067,7 @@ const updateTeacher = async (req, res) => {
     return res.status(500).json({ status: false, message: "error on server" });
   }
 };
+
 const getSingleTeacher = async (req, res) => {
   try {
     let teacherData = await TeacherAdmission.findOne({
@@ -971,6 +1082,7 @@ const getSingleTeacher = async (req, res) => {
     teacherData.teachersignature = `${config.IMAGE.TEACHER_FILE_URL_PATH}/${teacherData.teachersignature}`;
     // teacherData.photoOriginalName = teacherData.photo;
     // teacherData.signatureOriginalName = teacherData.signature;
+    console.log(teacherData.name);
     return res.status(200).json({ status: true, result: teacherData });
   } catch (err) {
     console.log(err, "--err");
@@ -1092,12 +1204,23 @@ const registerDriver = async (req, res) => {
     if (maxDriver && maxDriver.driverId) {
       const currentMaxId = maxDriver.driverId;
       const seriesNumber = parseInt(currentMaxId.substring(1), 10) + 1;
-      nextdriverId = `G${seriesNumber.toString().padStart(4, "0")}`;
+      nextdriverId = `D${seriesNumber.toString().padStart(4, "0")}`;
       console.log(nextdriverId, "---driverId222");
     }
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     let FullName = `${firstName} ${lastName}`;
+
+    let existingVehicle;
+
+    try {
+      existingVehicle = await DriverAdmission.findOne({vehicleRoute:req.body.vehicleRoute})
+    } catch (err) {
+      console.log(err);
+    }
+    if(existingVehicle){
+      return res.status(400).json({status:false, message:'The Vehicle Route is already allocated for another driver'})
+    }
 
     let newDoc = new DriverAdmission({
       driverId: nextdriverId,
@@ -1107,14 +1230,14 @@ const registerDriver = async (req, res) => {
       maritalstatus: req.body.maritalstatus,
       currentsalary: req.body.currentsalary,
       placeofbirth: req.body.placeofbirth,
-      driverphoto: req.files.driverphoto[0].filename,
+      driverphoto:req.files && req.files.driverphoto[0].filename,
       phoneNumber: req.body.phoneNumber,
       whatsappNumber: req.body.whatsappNumber,
       permanentaddress: req.body.permanentaddress,
       temporaryaddress: req.body.temporaryaddress,
       email: req.body.email,
       aadhaarNumber: req.body.aadhaarNumber,
-      licencephoto: req.files.licencephoto[0].filename,
+      licencephoto:req.files && req.files.licencephoto[0].filename,
       licencenumber: req.body.licencenumber,
       licencetype: req.body.licencetype,
       licenceexpirydate: req.body.licenceexpirydate,
@@ -1124,6 +1247,16 @@ const registerDriver = async (req, res) => {
       drivingexperience: req.body.drivingexperience,
       fatherphonenumber: req.body.fatherphonenumber,
       motherphonenumber: req.body.motherphonenumber,
+      grossSalary: req.body.grossSalary,
+      hraAllowance: req.body.hraAllowance,
+      hraAllowanceAmount: req.body.hraAllowanceAmount,
+      dearnessallowance: req.body.dearnessallowance,
+      dearnessallowanceAmount: req.body.dearnessallowanceAmount,
+      medicalallowance: req.body.medicalallowance,
+      medicalallowanceAmount: req.body.medicalallowanceAmount,
+      vehicleRegisterNumber: req.body.vehicleRegisterNumber,
+      vehicleRoute: req.body.vehicleRoute
+      
     });
     await newDoc.save();
     return res
@@ -1166,7 +1299,7 @@ const getSingleDriver = async (req, res) => {
   }
 
   let id = req.params.id;
-
+  let driverData;
   try {
     driverData = await DriverAdmission.findById({ _id: id }).lean();
     const [firstName, ...lastName] = driverData.name.split(" ");
@@ -1182,56 +1315,182 @@ const getSingleDriver = async (req, res) => {
   }
 };
 
-const DriverUpdate = async(req,res)=>{
-    const id =req.params.id;
-    console.log(req.body, "checking...")
-    try {
-      const driverData = await DriverAdmission.findById({ _id: id }).lean();
-      const [firstName, ...lastName] = driverData.name.split(' ');
-      const LastName = lastName.join(" ");
-      driverData.firstName = req.body.firstName || firstName;
-      driverData.lastName = req.body.lastName || LastName ;
+const DriverUpdate = async (req, res) => {
+  const id = req.params.id;
+  console.log(req.body, "checking...")
+  try {
+    const driverData = await DriverAdmission.findById({ _id: id }).lean();
+    const [firstName, ...lastName] = driverData.name.split(' ');
+    const LastName = lastName.join(" ");
+    driverData.firstName = req.body.firstName || firstName;
+    driverData.lastName = req.body.lastName || LastName;
 
-      let FullName = `${driverData.firstName} ${driverData.lastName}`;
-      // if (surName !== undefined && surName !== "") {
-      //     FullName += ` ${surName}`;
-      // }
+    let FullName = `${driverData.firstName} ${driverData.lastName}`;
 
-      let updateData = {
-          'driverId': req.body.driverId,
-          'name': FullName,
-          'dob': req.body.dob,
-          'age': req.body.age,
-          'maritalstatus': req.body.maritalstatus,
-          'currentsalary': req.body.currentsalary,
-          'placeofbirth': req.body.placeofbirth,
-          'driverphoto': req.files && req.files.driverphoto && req.files.driverphoto[0].filename,
-          'phoneNumber': req.body.phoneNumber,
-          'whatsappNumber': req.body.whatsappNumber,
-          'permanentaddress': req.body.permanentaddress,
-          'temporaryaddress': req.body.temporaryaddress,
-          'email': req.body.email,
-          'aadhaarNumber': req.body.aadhaarNumber,
-          'licencephoto': req.files && req.files.licencephoto && req.files.licencephoto[0].filename,
-          'licencenumber': req.body.licencenumber,
-          'licencetype': req.body.licencetype,
-          'licenceexpirydate': req.body.licenceexpirydate,
-          'bloodgroup': req.body.bloodgroup,
-          'higherqualification': req.body.higherqualification,
-          'role': req.body.role,
-          'drivingexperience': req.body.drivingexperience,
-          'fatherphonenumber': req.body.fatherphonenumber,
-          'motherphonenumber': req.body.motherphonenumber,
-      };
+    // // Check if the route is already allocated to another driver
+    // const existingDriver = await DriverAdmission.findOne({ vehicleRoute: req.body.vehicleRoute, _id: { $ne: id } });
+    // if (existingDriver) {
+    //   return res.status(400).json({ status: false, message:'The Vehicle Route is already allocated for another driver' });
+    // }
 
-      let UpdateDriver = await DriverAdmission.findOneAndUpdate({ _id: id }, { $set: updateData }, { new: true }).lean();
-      console.log(UpdateDriver);
-      return res.status(200).json({ 'status': true, 'message': "Data Updated successfully", 'result':UpdateDriver });
+    let updateData = {
+      'driverId': req.body.driverId,
+      'name': FullName,
+      'dob': req.body.dob,
+      'age': req.body.age,
+      'maritalstatus': req.body.maritalstatus,
+      'currentsalary': req.body.currentsalary,
+      'placeofbirth': req.body.placeofbirth,
+      'driverphoto': req.files && req.files.driverphoto && req.files.driverphoto[0].filename,
+      'phoneNumber': req.body.phoneNumber,
+      'whatsappNumber': req.body.whatsappNumber,
+      'permanentaddress': req.body.permanentaddress,
+      'temporaryaddress': req.body.temporaryaddress,
+      'email': req.body.email,
+      'aadhaarNumber': req.body.aadhaarNumber,
+      'licencephoto': req.files && req.files.licencephoto && req.files.licencephoto[0].filename,
+      'licencenumber': req.body.licencenumber,
+      'licencetype': req.body.licencetype,
+      'licenceexpirydate': req.body.licenceexpirydate,
+      'bloodgroup': req.body.bloodgroup,
+      'higherqualification': req.body.higherqualification,
+      'role': req.body.role,
+      'drivingexperience': req.body.drivingexperience,
+      'fatherphonenumber': req.body.fatherphonenumber,
+      'motherphonenumber': req.body.motherphonenumber,
+      'grossSalary': req.body.grossSalary,
+      'hraAllowance': req.body.hraAllowance,
+      'hraAllowanceAmount': req.body.hraAllowanceAmount,
+      'dearnessallowance': req.body.dearnessallowance,
+      'dearnessallowanceAmount': req.body.dearnessallowanceAmount,
+      'medicalallowance': req.body.medicalallowance,
+      'medicalallowanceAmount': req.body.medicalallowanceAmount,
+      'vehicleRegisterNumber': req.body.vehicleRegisterNumber,
+      'vehicleRoute': req.body.vehicleRoute
+    };
+
+    let UpdateDriver = await DriverAdmission.findOneAndUpdate({ _id: id }, { $set: updateData }, { new: true }).lean();
+    console.log(UpdateDriver);
+    return res.status(200).json({ 'status': true, 'message': "Data Updated successfully", 'result': UpdateDriver });
   } catch (err) {
-      console.log(err);
-      return res.status(404).json({ 'status': false, 'message': 'Driver not found' });
+    console.log(err);
+    return res.status(404).json({ 'status': false, 'message': 'Driver not found' });
   }
+};
 
+const PostBusRoute = async (req, res) => {
+  const id = req.params.id;
+  console.log(id,'id..id....iididi..');
+  try {
+    
+
+    // Check if the route is already allocated to another driver
+    const existingRoute = await BusAllocationModel.findOne({ vehicleRegisterNumber: req.body.vehicleRegisterNumber, _id: { $ne: id } , active:1});
+    if (existingRoute) {
+      return res.status(400).json({ status: false, message:'The Vehicle  is already allocated for another driver' });
+    }
+    const existingDriver = await BusAllocationModel.findOne({ driverId:req.body.driverId,active:1 });
+    if (existingDriver) {
+      return res.status(400).json({ status: false, message:'The Driver  is already allocated for another Route' });
+    }
+    // const existingAttender = await BusAllocationModel.findOne({attender:req.body.attender,active:1})
+    // if (existingAttender){
+    //   return res.status(400).json({status:false,message:'Attender already allocated for other vehicle'})
+    // }
+    const newAllocation = new BusAllocationModel({
+      driverId:req.body.driverId,
+      driverName: req.body.name,
+      attender: req.body.attender,
+      vehicleRoute: req.body.vehicleRoute,
+      vehicleRegisterNumber: req.body.vehicleRegisterNumber,
+    });
+
+    
+    // Save the new entry to the database
+    await newAllocation.save();
+
+    return res.status(200).json({ status: true, message: "Data saved successfully", result: newAllocation });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ status: false, message: 'Internal server error' });
+  }
+};
+
+const { Types } = require('mongoose');
+
+const BusAllocateDelete = async (req, res) => {
+  const id = req.params.id;
+  const update = { active: 0 };
+  try {
+    // Convert id to a valid ObjectId
+    const objectId = Types.ObjectId(id);
+
+    const del = await BusAllocationModel.updateOne({ _id: objectId }, { $set: update });
+    if (del.nModified === 0) {
+      return res.status(404).json({ status: false, message: 'Bus allocation not deleted' });
+    }
+    return res.status(200).json({ status: true, message: 'Bus allocation deleted successfully', result: del });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ status: false, message: 'Internal server error' });
+  }
+};
+
+const displayBusAllocation = async (driverId) => {
+  try {
+    // Fetch all bus allocations or filter by driverId if provided
+    const query = driverId ? { driverId } : {};
+    const busAllocations = await BusAllocationModel.find(query).lean();
+    return { status: true, result: busAllocations };
+  } catch (err) {
+    console.log(err);
+    return { status: false, message: "Failed to fetch bus allocations" };
+  }
+};
+const DisplayBusAllocation = async(req,res)=>{
+  let display;
+  try {
+    display = await BusAllocationModel.find({})
+    if(display){
+      return res.status(200).json({status:true,message:'Bus Allocation viewed successfully',result:display})
+    }
+    return res.status(404).json({status:false,message:'Bus allocation not found'})
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+const SingleAllocationDisplay = async(req,res)=>{
+  const id = req.params.id
+  let display;
+  try {
+    display = await BusAllocationModel.findById({_id:id}) 
+    if(display){
+      return res.status(200).json({status:true,message:'Bus Allocation viewed successfully',result:display})
+    }
+    return res.status(404).json({status:false,message:'Bus allocation not found'})
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+
+const DeleteBusAllocate = async(req,res)=>{
+  const id = req.params.id
+  const update = {active:0}
+  let deleteBus;
+  try {
+    deleteBus = await BusAllocationModel.updateOne({_id:id},{$set:update})
+    console.log(deleteBus,'del..x..x.x.');
+    if(!deleteBus){
+      return res.status(404).json({status:false,message:'Bus allocation not deleted'})
+    }
+    return res.status(200).json({status:true,message:'Bus allocation deleted successfully',result:deleteBus})
+  } catch (err) {
+    
+  }
 }
 
 const DriverDelete = async(req,res)=>{
@@ -1300,5 +1559,11 @@ module.exports = {
   ViewDriver,
   getSingleDriver,
   DriverUpdate,
-  DriverDelete
+  DriverDelete,
+  PostBusRoute,
+  BusAllocateDelete,
+  DeleteBusAllocate,
+  DisplayBusAllocation,
+  // SingleAllocationDisplay,
+  displayBusAllocation
 };

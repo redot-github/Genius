@@ -73,7 +73,7 @@ const VehicleEdit = () => {
     const { name, value } = e.target;
     setInputErrors((prevErrors) => ({
       ...prevErrors,
-      [name]: null, // Clear the error for this input
+      [name]: null, 
     }));
     setFormValue({ ...formValue, [name]: value });
   };

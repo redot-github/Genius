@@ -12,7 +12,11 @@ import {
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
-import {getSingleDriver, updateDriver} from '../actions/adminAction'
+import {
+  getAllVehicle,
+  getSingleDriver,
+  updateDriver,
+} from "../actions/adminAction";
 
 import toastAlert from "../lib/toast";
 
@@ -39,6 +43,15 @@ const initialFormValue = {
   licencephoto: "",
   driverphoto: "",
   higherqualification: "",
+  dearnessallowance: "",
+  dearnessallowanceAmount: "",
+  medicalallowance: "",
+  medicalallowance: "",
+  hraAllowance: "",
+  hraAllowanceAmount: "",
+  grossSalary: "",
+  vehicleRoute: "",
+  vehicleRegisterNumber: "",
 };
 
 const DriverEdit = () => {
@@ -51,6 +64,7 @@ const DriverEdit = () => {
   const [inputErrors, setInputErrors] = useState({});
   //Photo validating state
   const [fileErrorMsg, setFileErrorMsg] = useState("");
+  const [VehicleList, setVehicleList] = useState([]);
 
   const {
     firstName,
@@ -75,25 +89,92 @@ const DriverEdit = () => {
     driverphoto,
     licencetype,
     aadhaarNumber,
+    grossSalary,
+    hraAllowance,
+    hraAllowanceAmount,
+    dearnessallowance,
+    dearnessallowanceAmount,
+    medicalallowance,
+    medicalallowanceAmount,
+    vehicleRoute,
+    vehicleRegisterNumber,
   } = formValue;
 
-  const getData = async(Id) => {
+  const getData = async (Id) => {
     try {
-        let {status, result} = await getSingleDriver(Id)
-        if (status === true) {
-          setFormValue(result);
-          setData(result);
-        } else if (status === false) {
-          navigate("/driverview");
-        }
-      } catch (err) {
-        console.log(err, "--err");
+      let { status, result } = await getSingleDriver(Id);
+      if (status === true) {
+        setFormValue(result);
+        setData(result);
+      } else if (status === false) {
+        navigate("/driverview");
       }
-  }
+    } catch (err) {
+      console.log(err, "--err");
+    }
+  };
 
   useEffect(() => {
-    getData(Id)
-  },[])
+    getData(Id);
+  }, []);
+
+  const displayData = async () => {
+    try {
+      const vehicleDetails = await getAllVehicle();
+      const data = vehicleDetails.result;
+      setVehicleList(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    displayData();
+  }, []);
+
+  const [SelectedBusRoute, setSelectedBusRoute] = useState({
+    vehicleRoute: "",
+    vehicleRegisterNumber: "",
+  });
+
+  const handlerouteselection = (e) => {
+    const selectedNumber = e.target.value;
+    const selectedRoute = VehicleList.find(
+      (vehicleRoute) => vehicleRoute.vehicleRegisterNumber === selectedNumber
+    );
+
+    setSelectedBusRoute({
+      vehicleRoute: selectedRoute ? selectedRoute.vehicleRoute : "",
+      vehicleRegisterNumber: selectedNumber,
+    });
+
+    setFormValue({
+      ...formValue,
+      vehicleRoute: selectedRoute ? selectedRoute.vehicleRoute : "",
+      vehicleRegisterNumber: selectedNumber,
+    });
+  };
+
+  useEffect(() => {
+    setSelectedBusRoute({
+      vehicleRoute: formValue.vehicleRoute,
+      vehicleRegisterNumber: formValue.vehicleRegisterNumber,
+    });
+  }, [formValue]);
+
+  useEffect(() => {
+    const total = (
+      parseInt(formValue.currentsalary || 0) +
+      parseInt(formValue.dearnessallowanceAmount || 0) +
+      parseInt(formValue.medicalallowanceAmount || 0) +
+      parseInt(formValue.hraAllowanceAmount || 0)
+    ).toString();
+    setFormValue({ ...formValue, grossSalary: total });
+  }, [
+    formValue.currentsalary,
+    formValue.dearnessallowanceAmount,
+    formValue.medicalallowanceAmount,
+    formValue.hraAllowanceAmount,
+  ]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -111,6 +192,32 @@ const DriverEdit = () => {
       setFormValue({ ...formValue, [name]: value });
     }
   };
+
+  const handleChange2 = (e) => {
+    const { name, value } = e.target;
+
+    if (
+      name === "dearnessallowance" ||
+      name === "medicalallowance" ||
+      name === "hraAllowance"
+    ) {
+      const percentage = parseFloat(value);
+      const currentSalaryValue = parseFloat(formValue.currentsalary);
+      if (!isNaN(percentage) && !isNaN(currentSalaryValue)) {
+        const allowanceAmount = (currentSalaryValue * percentage) / 100;
+        setFormValue({
+          ...formValue,
+          [name]: value,
+          [`${name}Amount`]: allowanceAmount.toFixed(2),
+        });
+      } else {
+        setFormValue({ ...formValue, [name]: value, [`${name}Amount`]: "" });
+      }
+    } else {
+      setFormValue({ ...formValue, [name]: value });
+    }
+  };
+
   const handleFilePhotoChange = (event) => {
     const { name, files } = event.target;
     const supportedExtension = [".jpg", ".png", ".jpeg", ".gif", ".webp"];
@@ -129,7 +236,7 @@ const DriverEdit = () => {
         setFormValue({ ...formValue, ...{ [name]: "" } });
       } else {
         setFileErrorMsg("");
-        setFormValue({ ...formValue, ...{[name]: selectedFile } });
+        setFormValue({ ...formValue, ...{ [name]: selectedFile } });
       }
     }
   };
@@ -145,7 +252,7 @@ const DriverEdit = () => {
   };
 
   const handleNextClick = () => {
-    if (currentForm < 3) {
+    if (currentForm < 4) {
       setCurrentForm(currentForm + 1);
     }
   };
@@ -155,9 +262,9 @@ const DriverEdit = () => {
 
   const handleSubmit = async () => {
     try {
-      let formData = formValue
+      let formData = formValue;
 
-    let { status: apiStatus, message,} = await updateDriver(formData, Id);
+      let { status: apiStatus, message } = await updateDriver(formData, Id);
       if (apiStatus === true) {
         toastAlert("success", message);
         setFormValue(initialFormValue);
@@ -165,13 +272,11 @@ const DriverEdit = () => {
         navigate("/driverview");
       } else if (apiStatus === false) {
         toastAlert("error", message);
-        navigate("/driverview");
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-
-  }
+  };
 
   const renderForm = () => {
     switch (currentForm) {
@@ -251,7 +356,7 @@ const DriverEdit = () => {
                     <option>Divorced</option>
                   </select>
                 </div>
-                <div className="teach-box">
+                {/* <div className="teach-box">
                   <label htmlFor="">
                     Current Salary<sup>*</sup>
                   </label>
@@ -260,7 +365,7 @@ const DriverEdit = () => {
                     name="currentsalary"
                     value={currentsalary}
                   />
-                </div>
+                </div> */}
                 <div className="teach-box">
                   <label htmlFor="">
                     Place of Birth<sup>*</sup>
@@ -284,10 +389,10 @@ const DriverEdit = () => {
                     <div style={{ marginRight: "10px" }}>
                       <FontAwesomeIcon icon={faUpload} />
                     </div>
-                    {typeof driverphoto  === "object" ? (
+                    {typeof driverphoto === "object" ? (
                       <span>{driverphoto.name}</span>
                     ) : (
-                        <span>{getDriverPhotoName()}</span>
+                      <span>{getDriverPhotoName()}</span>
                     )}
                   </label>
                   <span className="text-error">{fileErrorMsg}</span>
@@ -379,6 +484,39 @@ const DriverEdit = () => {
                     maxLength={50}
                   />
                 </div>
+                <div className="allocate-center">
+          <div className="teach-box">
+            <div className="bus-allocation-heading">Bus Allocation</div>
+            <label htmlFor="">
+              Bus Stop<sup>*</sup>
+            </label>
+            <select
+              name="vehicleRoute"
+              value={SelectedBusRoute.vehicleRegisterNumber}
+              onChange={handlerouteselection}
+            >
+              <option value=""></option>
+              {VehicleList.map((route) => (
+                <option
+                  key={route.vehicleRegisterNumber}
+                  value={route.vehicleRegisterNumber}
+                >
+                  {route.vehicleRoute}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="teach-box">
+            <label htmlFor="">
+              Bus Number<sup>*</sup>
+            </label>
+            <input
+              name="vehicleRegisterNumber"
+              value={SelectedBusRoute.vehicleRegisterNumber}
+              onChange={handlerouteselection}
+            />
+          </div>
+          </div>
               </form>
             </div>
           </>
@@ -399,7 +537,7 @@ const DriverEdit = () => {
                   <select name="role" value={role} onChange={handleChange}>
                     <option />
                     <option>Driver</option>
-                    <option>Attendar</option>
+                    <option>Attender</option>
                   </select>
                 </div>
                 <div className="teach-box">
@@ -530,7 +668,7 @@ const DriverEdit = () => {
                     <div style={{ marginRight: "10px" }}>
                       <FontAwesomeIcon icon={faUpload} />
                     </div>
-                    {typeof licencephoto === 'object' ? (
+                    {typeof licencephoto === "object" ? (
                       <span>{licencephoto.name}</span>
                     ) : (
                       <span>{getDriverLicenceName()}</span>
@@ -545,6 +683,101 @@ const DriverEdit = () => {
             </div>
           </>
         );
+      case 4:
+        return (
+          <div className="teacher-details">
+            <div className="teacher-header">
+              <ion-icon name="person" />
+              <span>Allowance Details</span>
+            </div>
+            <form action="" className="teacher-form">
+              <div className="teach-box">
+                <label htmlFor="">
+                  Basic Salary<sup>*</sup>
+                </label>
+                <input
+                  type="text"
+                  name="currentsalary"
+                  value={currentsalary}
+                  onChange={handleChange2}
+                  maxLength={10}
+                />
+              </div>
+              <div className="teach-box">
+                <label htmlFor="">
+                  Dearness Allowance<sup>*</sup>
+                  (in Percentage %)
+                </label>
+                <input
+                  type="text"
+                  name="dearnessallowance"
+                  placeholder="%"
+                  value={dearnessallowance}
+                  onChange={handleChange2}
+                  maxLength={2}
+                />
+                <span value={dearnessallowanceAmount}>
+                  {dearnessallowanceAmount !== undefined
+                    ? `Amount: ${dearnessallowanceAmount}`
+                    : ""}
+                </span>
+              </div>
+
+              <div className="teach-box">
+                <label htmlFor="">
+                  Medical Allowance<sup>*</sup>
+                  (in Percentage %)
+                </label>
+                <input
+                  type="text"
+                  name="medicalallowance"
+                  placeholder="%"
+                  value={medicalallowance}
+                  onChange={handleChange2}
+                  maxLength={2}
+                />
+                <span value={medicalallowanceAmount}>
+                  {medicalallowanceAmount !== undefined
+                    ? `Amount: ${medicalallowanceAmount}`
+                    : ""}
+                </span>
+              </div>
+
+              <div className="teach-box">
+                <label htmlFor="">
+                  HRA<sup>*</sup>
+                  (in Percentage %)
+                </label>
+                <input
+                  type="text"
+                  name="hraAllowance"
+                  placeholder="%"
+                  value={hraAllowance}
+                  onChange={handleChange2}
+                  maxLength={2}
+                />
+                <span value={hraAllowanceAmount}>
+                  {hraAllowanceAmount !== undefined
+                    ? `Amount: ${hraAllowanceAmount}`
+                    : ""}
+                </span>
+              </div>
+
+              <div className="teach-box">
+                <label htmlFor="">
+                  Gross Salary<sup>*</sup>
+                </label>
+                <input
+                  type="text"
+                  name="grossSalary"
+                  value={grossSalary}
+                  onChange={handleChange2}
+                  disabled
+                />
+              </div>
+            </form>
+          </div>
+        );
       default:
         break;
     }
@@ -556,7 +789,7 @@ const DriverEdit = () => {
         <div className="right-content">
           {renderForm()}
           <div className="btnn">
-            {currentForm == 2 && (
+            {currentForm < 4 && currentForm !== 1 && (
               <button
                 className="previous"
                 onClick={() => {
@@ -567,7 +800,7 @@ const DriverEdit = () => {
                 Previous
               </button>
             )}
-            {currentForm < 3 && (
+            {currentForm < 4 && (
               <button
                 onClick={() => {
                   handleNextClick();
@@ -579,7 +812,7 @@ const DriverEdit = () => {
             )}
           </div>
           <div className="sub-btnn">
-            {currentForm == 3 && (
+            {currentForm === 4 && (
               <button
                 onClick={() => {
                   handlePreClick();
@@ -589,11 +822,11 @@ const DriverEdit = () => {
                 Previous
               </button>
             )}
-            {currentForm === 3 && (
+            {currentForm === 4 && (
               <button
                 type="button"
                 onClick={() => {
-                    handleSubmit();
+                  handleSubmit();
                 }}
               >
                 Submit

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 // import lib
-import { setAuthToken } from '../lib/localstorage';
+import {setAuthRecSTD, setAuthToken } from '../lib/localstorage';
 import toastAlert from '../lib/toast';
 //import Actions
 import { teacherlogin } from '../actions/teacherAction';
@@ -10,6 +10,7 @@ import { teacherlogin } from '../actions/teacherAction';
 import { setAuthorization } from '../config/axios'
 //import pacakages
 import isEmpty from 'is-empty';
+import { studentLogin } from '../actions/student.action';
 
 const initialFormValue = {
     email: '',
@@ -41,14 +42,15 @@ const StudentLogin = () => {
                 email: email,
                 password: password
             }
-            let { status, message, errors, token } = await teacherlogin(data)
+            let { status, message, errors, token , result } = await studentLogin(data)
             if (status === true) {
                 setFormValue(initialFormValue)
                 setErrors({})
+                setAuthRecSTD(result)
                 setAuthToken(`Bearer ${token}`);
                 setAuthorization(`Bearer ${token}`);
                 toastAlert('success',message)
-                navigate('/teacher-attendance')         
+                navigate('/student-dashboard')         
             } else if (status === false) {
                 if (errors) {
                     setErrors(errors)
@@ -116,6 +118,7 @@ const StudentLogin = () => {
             </form>
           </div>
         <p>Don't Have an Account..!<Link to={'/student-signup'} >SignUp Here</Link></p>
+        <p>Forget Password..!<Link to={'/student-forgetpassword'} >Click Here</Link></p>
         </div>
       </div>      
       

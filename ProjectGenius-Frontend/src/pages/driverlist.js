@@ -3,12 +3,17 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "./components/sidebar";
 //fontawesome pacakage
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis, faMoneyCheck, faSchool, faSort } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsis,
+  faMoneyCheck,
+  faSchool,
+  faSort,
+} from "@fortawesome/free-solid-svg-icons";
 //react confirm pop-up package
 import "react-alert-confirm/lib/style.css";
 import AlertConfirm, { Button } from "react-alert-confirm";
 //import Actions
-import {viewDriver, deleteDriver } from "../actions/adminAction";
+import { viewDriver, deleteDriver } from "../actions/adminAction";
 //import Lib
 import toastAlert from "../lib/toast";
 import DriverInfo from "./components/driverinfo";
@@ -19,7 +24,7 @@ const DriverList = () => {
   //states for student information toggle-sideviews
   const [showDriverInfo, toggleDriverInfo] = useState(false);
   const [clickedDriverDetails, setDriverDetails] = useState({});
-  //states for search box and sorting
+  //states for search box and sorting 
   const [userSearchInput, setUserSearchInput] = useState("");
   const [sortGrade, setGradeSort] = useState("");
   const [isAsc, setSortedData] = useState(true);
@@ -32,14 +37,14 @@ const DriverList = () => {
   const [selectAll, setSelectAll] = useState(false);
 
   //instance for useNavigate
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const editDriverDetail = (id) => {
-    navigate(`/driver-edit/${id}`)
-  }
+    navigate(`/driver-edit/${id}`);
+  };
   const busAllocation = (id) => {
-    navigate(`/driver-allocate/${id}`)
-  }
+    navigate(`/driver-allocate/${id}`);
+  };
 
   const removeDriver = async (Id) => {
     try {
@@ -53,7 +58,7 @@ const DriverList = () => {
     } catch (err) {
       console.log(err, "--err");
     }
-  }
+  };
 
   const openBasic = async (Id) => {
     const [action] = await AlertConfirm("Are you sure, you want to delete it");
@@ -123,11 +128,9 @@ const DriverList = () => {
                         </span>
                       </td>
                       <td>{item.driverId}</td>
+                      <td>{item.role}</td>
                       <td>
-                        {item.role}
-                      </td>
-                      <td>
-                        <span className="grade">G1</span>
+                        <span className="grade">{item.vehicleRegisterNumber}</span>
                       </td>
                       <td>+91{item.phoneNumber}</td>
                       <td>{item.drivingexperience}</td>
@@ -159,7 +162,7 @@ const DriverList = () => {
                             <li className="edit-box">
                               <Button
                                 className="pop-up-button"
-                                // onClick={() => openBasic(item._id)}
+                                onClick={() => openBasic(item._id)}
                               >
                                 <a
                                   className="dropdown-item"
@@ -175,23 +178,25 @@ const DriverList = () => {
                                 </a>
                               </Button>
                             </li>
-                            <li className="edit-box">
-                              <a
-                                className="dropdown-item"
-                                href="#"
-                                onClick={() => busAllocation(item._id)}
-                                style={{ color: "revert-layer" }}
-                              >
-                                <FontAwesomeIcon
-                                  icon={faSchool}
-                                  style={{
-                                    color: "revert-layer",
-                                    marginRight: "5px",
-                                  }}
-                                />
-                                Bus-allocate
-                              </a>
-                            </li>
+                            {item.role === "Driver" && (
+                              <li className="edit-box">
+                                <a
+                                  className="dropdown-item"
+                                  href="#"
+                                  onClick={() => busAllocation(item._id)}
+                                  style={{ color: "revert-layer" }}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faSchool}
+                                    style={{
+                                      color: "revert-layer",
+                                      marginRight: "5px",
+                                    }}
+                                  />
+                                  Bus-allocate
+                                </a>
+                              </li>
+                            )}
                           </ul>
                         </div>
                       </td>
@@ -209,9 +214,13 @@ const DriverList = () => {
     try {
       let { status, result, imageUrl } = await viewDriver();
       if (status === true) {
-        setLoaderView(false)
-        const driverData = await result.filter(each => each.active === 1 && each.name.toLowerCase().includes(userSearchInput.toLowerCase()))
-        setData(driverData)
+        setLoaderView(false);
+        const driverData = await result.filter(
+          (each) =>
+            each.active === 1 &&
+            each.name.toLowerCase().includes(userSearchInput.toLowerCase())
+        );
+        setData(driverData);
         setIMAGE_URL(imageUrl);
       }
     } catch (err) {
@@ -220,10 +229,12 @@ const DriverList = () => {
   };
   useEffect(() => {
     getData();
-  }, []);
+  }, [userSearchInput]);
 
   const handleDriverInfo = (id) => {
     let driverDetails = data.find((eachItem) => eachItem.driverId === id);
+    console.log(id,'id..id...dididi');
+    console.log(data,'data...');
     if (driverDetails) {
       setDriverDetails(driverDetails);
       toggleDriverInfo(true);

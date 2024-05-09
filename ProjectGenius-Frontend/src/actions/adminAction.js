@@ -665,6 +665,10 @@ export const registerDriver = async (formData) => {
     };
   } catch (err) {
     console.log(err, "--err");
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
   }
 };
 
@@ -740,10 +744,104 @@ export const updateDriver = async (formData, id) => {
   }
 };
 
+export const busRouteAllocate = async (formData, id) => {
+  try {
+    let respData = await axios({
+      url: `/allocateBusRoute/${id}`,
+      method: "post",
+      data: formData,
+    });
+    return {
+      status: respData.data.status,
+      result: respData.data.result,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+
+export const displayBusAllocation = async () => {
+  try {
+    let respData = await axios({
+      url: "/DisplayBusAllocation",
+      method: "get",
+    });
+    return {
+      status: respData.data.status,
+      result: respData.data.result,
+      imageUrl: respData.data.imageUrl,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+
+export const displayBusAllocationId = async (driverId) => {
+  try {
+    let respData = await axios({
+      url: `/displayBusAllocation/${driverId}`, // Include driverId in the URL
+      method: 'get',
+    });
+    return {
+      status: respData.data.status,
+      result: respData.data.result,
+      imageUrl: respData.data.imageUrl,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+
+export const getSingleBusAllocate = async (id) => {
+  try {
+    let respData = await axios({
+      url: `/singleAllocationDisplay/${id}`,
+      method: "get",
+    });
+    return {
+      status: respData.data.status,
+      result: respData.data.result,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+
 export const deleteDriver = async (id) => {
   try {
     let respData = await axios({
       url: `/deleteDriverDetail/${id}`,
+      method: "put",
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+
+export const deleteBusAllocation = async (id) => {
+  try {
+    let respData = await axios({
+      url: `/deleteBusAllocate/${id}`,
       method: "put",
     });
     return {
@@ -893,7 +991,7 @@ export const updateVehicleRouteData = async (routeData) => {
     });
     return {
       status: respData.data.status,
-      message: respData.data.message
+      message: respData.data.message,
     };
   } catch (err) {
     return {
@@ -903,3 +1001,327 @@ export const updateVehicleRouteData = async (routeData) => {
   }
 };
 
+export const LeaveFormUrl = async (routeData) => {
+  try {
+    let respData = await axios({
+      url: `/leaveapplication`,
+      method: "post",
+      data: routeData,
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+//leaveform
+export const leaveformapply = async (formData) => {
+  try {
+    let respData = await axios({
+      url: "/leaveapplication",
+      method: "post",
+      data: formData,
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+      errors: err.response.data.errors,
+    };
+  }
+};
+
+//leaveapply
+export const applyLeave = async (formData) => {
+  try {
+    let respData = await axios({
+      url: "/leaveapplication",
+      method: "post",
+      data: formData,
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    console.log(err, "errrr");
+  }
+};
+
+//Leave List
+
+export const leaveDisplay = async () => {
+  try {
+    let respData = await axios({
+      url: "/leaveDisplay",
+      method: "get",
+    });
+    return {
+      status: respData.data.status,
+      result: respData.data.result,
+    };
+  } catch (err) {
+    console.log(err, "errrr");
+  }
+};
+
+//Leave-Approval
+export const leavesanction = async (formData, id) => {
+  try {
+    let respData = await axios({
+      url: `/LeavestatusEdit/${id}`,
+      method: "put",
+      data: formData,
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+
+
+// export const leaveAllocate = async (formData) => {
+//   try {
+//     let respData = await axios({
+//       url: "/alloctaionFieldPost",
+//       method: "post",
+//       data: formData,
+//     });
+//     return {
+//       status: respData.data.status,
+//       message: respData.data.message,
+//       result: respData.data.result,
+//     };
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+//employesalaryform
+export const employesalaryform = async (formData) => {
+  try {
+    let respData = await axios({
+      url: "/Employee-Salary",
+      method: "post",
+      data: formData,
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    console.log(err, "errrr");
+  }
+};
+
+
+//fetchExistingLeaveDates
+export const fetchExistingLeaveDates = async (formData) => {
+  try {
+    let respData = await axios({
+      url: "/fetchExistingLeaveDates",
+      method: "get",
+      data: formData,
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    console.log(err, "errrr");
+  }
+};
+
+
+export const leaveAllocate = async(formData)=>{
+  try{
+    let respData = await axios({
+      url:"/alloctaionFieldPost",
+      method:"post",
+      data:formData
+    
+    })
+    return{
+      status: respData.data.status,
+      message:respData.data.message,
+      result:respData.data.result
+    }
+  }
+  catch(err){
+    console.log(err);
+  }
+}
+
+export const leaveAllocateDisplay = async()=>{
+  try{
+    let respData = await axios({
+      url:"/allocationFieldDisplay",
+      method:"get",
+    
+    
+    })
+    return{
+      status: respData.data.status,
+      message:respData.data.message,
+      result:respData.data.result
+    }
+  }
+  catch(err){
+    console.log(err);
+  }
+}
+
+export const singleAllocateDisplay = async(id)=>{
+  try{
+    let respData = await axios({
+      url:`/singleAllocationDisplay/${id}`,
+      method:"get",
+    
+    
+    })
+    return{
+      status: respData.data.status,
+      message:respData.data.message,
+      result:respData.data.result
+    }
+  }
+  catch(err){
+    console.log(err);
+  }
+}
+
+// actions/adminAction.js
+
+export const leaveAllocateEdit = async(formData)=>{
+  try{
+    const respData = await axios.put(`/allocationFieldEdit/${formData.employeeId}`, formData);
+    return{
+      status: respData.data.status,
+      message:respData.data.message,
+      result:respData.data.result
+    };
+  }
+  catch(err){
+    console.log(err);
+  }
+}
+
+
+
+export const casualLeaveAllocateEdit = async (formData) => {
+  try {
+    const respData = await axios.put(`/allocationCasualFieldEdit/${formData.employeeId}`, formData);
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+      result: respData.data.result  // Return the updated data
+    };
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+export const leaveAllocateDelete = async(formData)=>{
+  try{
+    const respData = await axios.delete(`/allocationFieldDelete/${formData.employeeId}`, formData);
+    return{
+      status: respData.data.status,
+      message:respData.data.message,
+      result:respData.data.result
+    };
+  }
+  catch(err){
+    console.log(err);
+  }
+}
+
+export const payrollsalary = async (EmployeePaySlip) => {
+  try {
+    let respData = await axios({
+      url: "/payrollsalary",
+      method: "post",
+      data: EmployeePaySlip,
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    console.log(err, "errrr");
+  }
+};
+
+//salaryformUpdate
+export const salaryformUpdate = async (formData, employeePaySlipId, employeeId) => {
+  try {
+    const respData = await axios.put(`/salaryformUpdate/${employeePaySlipId}/${employeeId}`, formData);
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+
+
+
+//salarypayrollDislay
+
+export const salarypayrollDislay = async (month) => {
+  try {
+    let respData = await axios({
+      url: `/salarypayrollDislay/${month}`,
+      method: "get",
+    });
+    return {
+      status: respData.data.status,
+      message: respData.data.message,
+      result : respData.data.result,
+    };
+  } catch (err) {
+    return {
+      status: err.response.data.status,
+      message: err.response.data.message,
+    };
+  }
+};
+
+export const payrollListmonth = async()=>{
+  try{
+    let respData = await axios({
+      url:"/payrollListmonth",
+      method:"get",
+    
+    
+    })
+    return{
+      status: respData.data.status,
+      message:respData.data.message,
+      result:respData.data.result
+    }
+  }
+  catch(err){
+    console.log(err);
+  }
+}

@@ -35,7 +35,6 @@ const Attendance = (props) => {
         <div className="teacher-attendance" style={{boxShadow: '1px 3px 10px 4px #00000040',background:"rgb(247, 247, 248)" }}>
             <div className="monthly-content">
               <p className="monthlypara">Total Attendance Status for Month of : {Month}</p>
-           {/* <img src={`${process.env.PUBLIC_URL}/images/error.png`} height={'30px'} width={'30px'} className="crossbutton" alt="Close Button" onClick={() => CloseModel()}/> */}
             <table className='attendance-table'>
               <tr>
                 <th>S.No</th>

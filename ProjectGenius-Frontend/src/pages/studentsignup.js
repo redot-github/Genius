@@ -7,6 +7,7 @@ import toastAlert from '../lib/toast';
 import { teachersignup } from '../actions/teacherAction';
 //import pacakages
 import isEmpty from 'is-empty';
+import { studentSignup } from '../actions/student.action';
 
 const initialFormValue = {
     email: '',
@@ -40,12 +41,12 @@ const StudentSignup = () => {
                 password: password,
                 confirmpassword: confirmpassword,
             }
-            let { status, message, errors } = await teachersignup(data)
+            let { status, message, errors } = await studentSignup(data)
             if (status === true) {
                 setFormValue(initialFormValue)
                 setErrors({})
                 toastAlert('success',message)
-                navigate('/teacher-login')         
+                navigate('/student-login')         
             } else if (status === false) {
                 if (errors) {
                     setErrors(errors)

@@ -327,7 +327,15 @@
   box-shadow: 4px 4px 5px #cacbcd;
   padding: 10px; /* Add padding for spacing */
 }
-
+.std-history2 {
+    width: 100%;
+    font-size: 14px;
+    height: auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 4px 4px 5px #cacbcd;
+    padding: 10px; /* Add padding for spacing */
+  }
 /* .adrs styles */
 .adrs {
   width: 100%;

@@ -12,11 +12,13 @@ import toastAlert from '../lib/toast';
 import TeacherPersonal from './components/teacherpersonal';
 import TeacherContact from './components/teachercontact';
 import TeacherHistory from './components/teacherhistory';
+import TeacherSalary from './components/teachersalary';
 
 const initialFormValue = {
     'firstName': '',
     'lastName': '',
     'currentsalary': '',
+    'grossSalary': '',
     'teachingexperience': '',
     'maritalstatus': '',
     'teachingcertificates': '',
@@ -38,6 +40,14 @@ const initialFormValue = {
     'teachersignature': '',
     'teacherphoto': '',
     'higherqualification': '',
+    'vehicleRoute': '',
+    'vehicleRegistrationNumber': '',
+    'dearnessallowance':'',
+    'dearnessallowanceAmount':'',
+    'medicalallowance':'',
+    'medicalallowanceAmount':'',
+    'hraAllowance':'',
+    'hraAllowanceAmount':''
 }
 
 const Teacher = () => {
@@ -50,8 +60,15 @@ const Teacher = () => {
         dob,
         age,
         email,
-       higherqualification,
+        higherqualification,
         currentsalary,
+        grossSalary,
+        hraAllowance,
+        hraAllowanceAmount,
+        dearnessallowance,
+        dearnessallowanceAmount,
+        medicalallowance,
+        medicalallowanceAmount,
         fatherphonenumber,
         motherphonenumber,
         placeofbirth,
@@ -69,12 +86,14 @@ const Teacher = () => {
         teacherphoto,
         subjects,
         aadhaarNumber,
+        vehicleRoute,
+        vehicleRegisterNumber
     } = formValue;
 
     const navigate = useNavigate();
 
     const handleNextClick = () => {
-        if (currentForm < 3) {
+        if (currentForm < 4) {
             setCurrentForm(currentForm + 1)
         }
     };
@@ -111,13 +130,23 @@ const Teacher = () => {
             formData.append('subjects', subjects)
             formData.append('aadhaarNumber', aadhaarNumber)
             formData.append('currentsalary', currentsalary);
+            formData.append('grossSalary', grossSalary);
+            formData.append('dearnessallowanceAmount', dearnessallowanceAmount);
+            formData.append('dearnessallowance', dearnessallowance);
+            formData.append('medicalallowance',medicalallowance );
+            formData.append('medicalallowanceAmount', medicalallowanceAmount);
+            formData.append('hraAllowanceAmount', hraAllowanceAmount);
+            formData.append('hraAllowance', hraAllowance);
+            formData.append('vehicleRoute', vehicleRoute);
+            formData.append('vehicleRegisterNumber',vehicleRegisterNumber);
 
             let { status, message, errors } = await registerTeacher(formData)
             if (status === true) {
 
                 toastAlert('success', message)
                 setFormValue(initialFormValue)
-                navigate('/teacherview')
+                console.log(initialFormValue)
+                navigate('/teacherview')  
             }
 
         } catch (err) {
@@ -131,7 +160,9 @@ const Teacher = () => {
             case 2:
                 return <TeacherContact  formValue={formValue} setFormValue={setFormValue} handlePreClick={handlePreClick} handleNextClick={handleNextClick} />;
             case 3:
-                return <TeacherHistory formValue={formValue} setFormValue={setFormValue} handlePreClick={handlePreClick} handleSubmit={handleSubmit}  />;
+                return <TeacherHistory formValue={formValue} setFormValue={setFormValue} handlePreClick={handlePreClick} handleNextClick={handleNextClick} />;
+            case 4:
+                return <TeacherSalary formValue={formValue} setFormValue={setFormValue} handlePreClick={handlePreClick} handleSubmit={handleSubmit}  />;
             default:
                 return null;
         }

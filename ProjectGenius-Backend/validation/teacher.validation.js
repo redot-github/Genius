@@ -37,6 +37,7 @@ const teacherregisterValid = (req, res, next) => {
 
     return next();
 }
+
 const changepasswordValid = (req, res, next) => {
     let errors = {};
     let passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;

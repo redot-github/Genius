@@ -11,6 +11,13 @@ const teacheradmissionSchema = new Schema ({
     'maritalstatus':String,
     'teachingexperience':String,
     'currentsalary':String,
+    'grossSalary':String,
+    'hraAllowance':String,
+    'hraAllowanceAmount':String,
+    'dearnessallowance':String,
+    'dearnessallowanceAmount':String,
+    'medicalallowance':String,
+    'medicalallowanceAmount':String, 
     'teacherphoto':String,
     'placeofbirth':String,
     'phoneNumber':Number,
@@ -27,11 +34,14 @@ const teacheradmissionSchema = new Schema ({
     'teachersignature':String,
     'fatherphonenumber':Number,
     'motherphonenumber': Number,
+    'vehicleRegisterNumber':String,
+    'vehicleRoute':String,
     'active':{
         type: Number,
         default: 1
     },
-})
+});
+
 
 let teacheradmissionModel = mongoose.model('teacheradmission', teacheradmissionSchema, 'teacheradmission' )
 

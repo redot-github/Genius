@@ -10,6 +10,13 @@ import { registerStudent } from '../actions/adminAction';
 // import lib
 import toastAlert from '../lib/toast';
 import FormProgressBar from './components/progressbar';
+import studentpersonal from '../../src/pages/components/studentpersonal'
+// import { getAllVehicle } from '../actions/adminAction';
+// import { SelectedBusRoute } from '../pages/components/studentpersonal';
+
+
+
+
 
 const initialFormValue = {
   'firstName': '',
@@ -35,7 +42,9 @@ const initialFormValue = {
   'vaccination': '',
   'whatsappNumber': '',
   'signature': '',
-  'photo': ''
+  'photo': '',
+  'vehicleRegisterNumber' : '',
+  'vehicleRoute' : '',
 }
 const NewAdmission = () => {
   const [currentForm, setCurrentForm] = useState(1);
@@ -65,7 +74,9 @@ const NewAdmission = () => {
     photo,
     previousschoolhistory,
     aadhaarNumber,
-    admissiongrade
+    admissiongrade,
+    vehicleRegisterNumber,
+    vehicleRoute
   } = formValue;
 
   const navigate =useNavigate();
@@ -81,7 +92,7 @@ const NewAdmission = () => {
 };
 
   const handleSubmit = async () => {
-    
+    console.log(handleSubmit)
     try {
       let formData = new FormData();
       formData.append('firstName', firstName)
@@ -108,7 +119,9 @@ const NewAdmission = () => {
       formData.append('previousschoolhistory', previousschoolhistory)
       formData.append('aadhaarNumber', aadhaarNumber)
       formData.append('admissiongrade', admissiongrade);
-
+      formData.append('vehicleRegisterNumber', vehicleRegisterNumber);
+      formData.append('vehicleRoute', vehicleRoute);
+  
       let { status, message, errors } = await registerStudent(formData)
       if (status === true) {
         

@@ -63,6 +63,24 @@ const TeacherSidebar = () => {
             <p
               className="am"
               style={
+                pathname === "/teacherleaveappliedlist"
+                  ? { backgroundColor: "#f9f6b8" }
+                  : {}
+              }
+              onClick={() => toggleMenu()}
+            >
+              <Link to="/teacherleaveappliedlist">
+                <img
+                  src={`${process.env.PUBLIC_URL}/images/sheet.png`}
+                  alt="attendance"
+                  style={{ marginRight: "18px" }}
+                />
+                My Leave
+              </Link>
+            </p>
+            <p
+              className="am"
+              style={
                 pathname === ("/teacher-marksheet")
                   ? { backgroundColor: "#f9f6b8" }
                   : {}

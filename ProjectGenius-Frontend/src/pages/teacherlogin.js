@@ -25,6 +25,7 @@ const TeacherLogin = () => {
     const [inputErrors,setInputErrors] = useState({});
   
     const { teacherId, password } = formValue;
+    console.log(formValue,'id..,pass..');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -36,7 +37,6 @@ const TeacherLogin = () => {
     }
     const handleSubmit = async () => {
         try {
-
             let data = {
                 teacherId: teacherId,
                 password: password

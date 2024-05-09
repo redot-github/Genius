@@ -36,6 +36,7 @@ import ParentLogin from './pages/parentlogin';
 import ParentSignup from './pages/parentsignup';
 import TeacherSchedule from './pages/teacherschedule';
 import TeacherDashboard from './pages/teacherdashboard';
+import StudentDashboard from './pages/studentdashboard';
 import MultiSectionAllocation from './pages/multisectionallocation';
 import TeacherAllocation from './pages/teacherallocation';
 import GenerateReport from './pages/studentmarksheetgenerate';
@@ -55,6 +56,23 @@ import VehicleList from './pages/vehiclelist';
 import VehicleEdit from './pages/vehicleedit';
 import DriverEdit from './pages/driveredit';
 import RouteAllocation from './pages/routeallocation';
+import LeaveForm from './pages/components/leaveForm';
+import LeaveDetails from './pages/components/leaveDetails';
+import LeaveSchedule from './pages/leaveschedule';
+import PayrollForm from './pages/components/payrollForm';
+import LeaveApproval from './pages/leaveApproval';
+import Teacherleaveappliedlist from './pages/components/teacherleaveAppliedlist';
+import EmployeeleaveEdit from './pages/employeeleaveEdit';
+import PayrollList from './pages/payrollList';
+import Payrollfilter from './pages/components/payrollFilter';
+import EmployeeAttendance from './pages/components/employeeAttendance';
+import BusAllocate from './pages/busallocate';
+import BusAllocateList from './pages/busallocationlist';
+import PayrolllistGenerate from './pages/PaylistUpdate';
+import StudentResetpassword from './pages/studentrestpassword';
+import StudentForgetpassword from './pages/studentforgetpassword';
+import StudentChangepassword from './pages/studentchangepassword';
+// import Studentleavestatus from './pages/components/studentleavestatus';
 
 function App() {
   return (
@@ -66,54 +84,79 @@ function App() {
           <Route path="/" element={<ConditionRoute type="public"><Home /></ConditionRoute>} />
           <Route path="/home" element={<ConditionRoute type="public"><Home /></ConditionRoute>} />
           <Route path="/login" element={<ConditionRoute type="public"><Login /></ConditionRoute>} />
-          <Route path="/verify" element={<ConditionRoute type="private"><Verify /></ConditionRoute>} />
-          <Route path="/newadmission" element={<ConditionRoute type="private"><NewAdmission /></ConditionRoute>} />
-          <Route path="/students" element={<ConditionRoute type="private"><Students /></ConditionRoute>} />
-          <Route path="/student-edit/:Id" element={<ConditionRoute type="private"><StudentEdit /></ConditionRoute>} />
-          <Route path="/feecollection/:Id" element={<ConditionRoute type="private"><FeeCollection /></ConditionRoute>} />
-          <Route path="/feepayment/:name" element={<ConditionRoute type="private"><FeePayment /></ConditionRoute>} />
-          <Route path="/feecomplete" element={<ConditionRoute type="private"><FeeComplete /></ConditionRoute>} />
-          <Route path="/feesetup" element={<ConditionRoute type="private"><FeeSetup /></ConditionRoute>} />
-          <Route path="/teacher" element={<ConditionRoute type="private"><Teacher /></ConditionRoute>} />
-          <Route path="/teacherview" element={<ConditionRoute type="private"><TeacherList /></ConditionRoute>} />
-          <Route path="/teacher-edit/:Id" element={<ConditionRoute type="private"><TeacherEdit /></ConditionRoute>} />
-          <Route path="/teacherdetails/:Id" element={<ConditionRoute type="private"><TeacherDetail /></ConditionRoute>} />
-          <Route path="/teacherschedule/:Id" element={<ConditionRoute type="private"><TeacherSchedule /></ConditionRoute>} />
-          <Route path="/teachertimetable/:teacherId" element={<ConditionRoute type="private"><TimeTable /></ConditionRoute>} />
-          <Route path="/paymentfailure" element={<ConditionRoute type="private"><PaymentFailure /></ConditionRoute>} />
-          <Route path="/feeslist" element={<ConditionRoute type="private"><FeesList /></ConditionRoute>} />
-          <Route path="/fees-edit/:Id" element={<ConditionRoute type="private"><FeesEdit /></ConditionRoute>} />
-          <Route path="/sectionallocate/:Id" element={<ConditionRoute type="private"><SectionAllocation /></ConditionRoute>} />
-          <Route path="/teacher-allocate/:Id" element={<ConditionRoute type="private"><TeacherAllocation /></ConditionRoute>} />
-          <Route path="/multi-sectionallocate" element={<ConditionRoute type="private"><MultiSectionAllocation /></ConditionRoute>} />
-          <Route path="/driver" element={<ConditionRoute type="private"><Driver /></ConditionRoute>} />
-          <Route path="/driverview" element={<ConditionRoute type="private"><DriverList /></ConditionRoute>} />
-          <Route path="/vehicle" element={<ConditionRoute type="private"><VehicleAdmission /></ConditionRoute>} />
-          <Route path="/vehicleview" element={<ConditionRoute type="private"><VehicleList /></ConditionRoute>} />
-          <Route path="/vehicle-edit/:Id" element={<ConditionRoute type="private"><VehicleEdit /></ConditionRoute>} />
-          <Route path="/driver-edit/:Id" element={<ConditionRoute type="private"><DriverEdit /></ConditionRoute>} />
-          <Route path="/route-allocate/:Id" element={<ConditionRoute type="private"><RouteAllocation /></ConditionRoute>} />
+          <Route path="/verify" element={<ConditionRoute type="public"><Verify /></ConditionRoute>} />
+          <Route path="/newadmission" element={<ConditionRoute type="public"><NewAdmission /></ConditionRoute>} />
+          <Route path="/students" element={<ConditionRoute type="public"><Students /></ConditionRoute>} />
+          <Route path="/student-edit/:Id" element={<ConditionRoute type="public"><StudentEdit /></ConditionRoute>} />
+          <Route path="/feecollection/:Id" element={<ConditionRoute type="public"><FeeCollection /></ConditionRoute>} />
+          <Route path="/feepayment/:name" element={<ConditionRoute type="public"><FeePayment /></ConditionRoute>} />
+          <Route path="/feecomplete" element={<ConditionRoute type="public"><FeeComplete /></ConditionRoute>} />
+          <Route path="/feesetup" element={<ConditionRoute type="public"><FeeSetup /></ConditionRoute>} />
+          <Route path="/teacher" element={<ConditionRoute type="public"><Teacher /></ConditionRoute>} />
+          <Route path="/teacherview" element={<ConditionRoute type="public"><TeacherList /></ConditionRoute>} />
+          <Route path="/teacher-edit/:Id" element={<ConditionRoute type="public"><TeacherEdit /></ConditionRoute>} />
+          <Route path="/teacherdetails/:Id" element={<ConditionRoute type="public"><TeacherDetail /></ConditionRoute>} />
+          <Route path="/teacherschedule/:Id" element={<ConditionRoute type="public"><TeacherSchedule /></ConditionRoute>} />
+          <Route path="/teachertimetable/:teacherId" element={<ConditionRoute type="public"><TimeTable /></ConditionRoute>} />
+          <Route path="/paymentfailure" element={<ConditionRoute type="public"><PaymentFailure /></ConditionRoute>} />
+          <Route path="/feeslist" element={<ConditionRoute type="public"><FeesList /></ConditionRoute>} />
+          <Route path="/fees-edit/:Id" element={<ConditionRoute type="public"><FeesEdit /></ConditionRoute>} />
+          <Route path="/sectionallocate/:Id" element={<ConditionRoute type="public"><SectionAllocation /></ConditionRoute>} />
+          <Route path="/teacher-allocate/:Id" element={<ConditionRoute type="public"><TeacherAllocation /></ConditionRoute>} />
+          <Route path="/driver-allocate/:Id" element={<ConditionRoute type="public"><BusAllocate /></ConditionRoute>} />
+          <Route path="/busallocateview" element={<ConditionRoute type="public"><BusAllocateList /></ConditionRoute>} />
+          <Route path="/multi-sectionallocate" element={<ConditionRoute type="public"><MultiSectionAllocation /></ConditionRoute>} />
+          <Route path="/driver" element={<ConditionRoute type="public"><Driver /></ConditionRoute>} />
+          <Route path="/driverview" element={<ConditionRoute type="public"><DriverList /></ConditionRoute>} />
+          <Route path="/vehicle" element={<ConditionRoute type="public"><VehicleAdmission /></ConditionRoute>} />
+          <Route path="/vehicleview" element={<ConditionRoute type="public"><VehicleList /></ConditionRoute>} />
+          <Route path="/vehicle-edit/:Id" element={<ConditionRoute type="public"><VehicleEdit /></ConditionRoute>} />
+          <Route path="/driver-edit/:Id" element={<ConditionRoute type="public"><DriverEdit /></ConditionRoute>} />
+          <Route path="/route-allocate/:Id" element={<ConditionRoute type="public"><RouteAllocation /></ConditionRoute>} />
           <Route path="/teacher-login" element={<ConditionRoute type="public"><TeacherLogin /></ConditionRoute>} />
           <Route path="/teacher-signup" element={<ConditionRoute type="public"><TeacherSignup /></ConditionRoute>} />
-          <Route path="/teacher-changepassword" element={<ConditionRoute type="private2"><TeacherChangepassword /></ConditionRoute>} />
+          <Route path="/teacher-changepassword" element={<ConditionRoute type="public"><TeacherChangepassword /></ConditionRoute>} />
+          <Route path="/student-changepassword" element={<ConditionRoute type="public"><StudentChangepassword /></ConditionRoute>} />
           <Route path="/teacher-forgetpassword" element={<ConditionRoute type="public"><TeacherForgetpassword /></ConditionRoute>} />
+          <Route path="/student-forgetpassword" element={<ConditionRoute type="public"><StudentForgetpassword /></ConditionRoute>} />
           <Route path="/teacher-resetpassword/:Id" element={<ConditionRoute type="public"><TeacherResetpassword /></ConditionRoute>} />
-          <Route path="/teacher-attendance" element={<ConditionRoute type="private2"><StudentAttendance /></ConditionRoute>} />
-          <Route path="/teacher-marksheet" element={<ConditionRoute type="private2"><StudentMarksheet /></ConditionRoute>} />
-          <Route path="/teacher-dashboard" element={<ConditionRoute type="private2"><TeacherDashboard /></ConditionRoute>} />
-          <Route path="/student-login" element={<ConditionRoute type="private2"><StudentLogin /></ConditionRoute>} />
-          <Route path="/student-signup" element={<ConditionRoute type="private2"><StudentSignup /></ConditionRoute>} />
-          <Route path="/parent-login" element={<ConditionRoute type="private2"><ParentLogin /></ConditionRoute>} />
-          <Route path="/parent-signup" element={<ConditionRoute type="private2"><ParentSignup /></ConditionRoute>} />
-          <Route path="/parent-home" element={<ConditionRoute type="private2"><ParentHomepage /></ConditionRoute>} />
-          <Route path="/student-profile" element={<ConditionRoute type="private2"><StudentProfile /></ConditionRoute>} />
-          <Route path="/bus-details" element={<ConditionRoute type="private2"><BusDetails /></ConditionRoute>} />
-          <Route path="/bus-schedule" element={<ConditionRoute type="private2"><BusSchedule /></ConditionRoute>} />
-          <Route path="/bus-attendance" element={<ConditionRoute type="private2"><BusAttendance /></ConditionRoute>} />
-          <Route path="/bus-tracking" element={<ConditionRoute type="private2"><BusTracking /></ConditionRoute>} />
-          <Route path="/teacher-generatecard" element={<ConditionRoute type="private2"><GenerateReport /></ConditionRoute>} />
+          <Route path="/student-resetpassword/:Id" element={<ConditionRoute type="public"><StudentResetpassword /></ConditionRoute>} />
+          <Route path="/teacher-attendance" element={<ConditionRoute type="public"><StudentAttendance /></ConditionRoute>} />
+          <Route path="/teacher-marksheet" element={<ConditionRoute type="public"><StudentMarksheet /></ConditionRoute>} />
+          <Route path="/teacher-dashboard" element={<ConditionRoute type="public"><TeacherDashboard /></ConditionRoute>} />
+          <Route path="/student-dashboard" element={<ConditionRoute type="public"><StudentDashboard /></ConditionRoute>} />
+          <Route path="/student-login" element={<ConditionRoute type="public"><StudentLogin /></ConditionRoute>} />
+          <Route path="/student-signup" element={<ConditionRoute type="public"><StudentSignup /></ConditionRoute>} />
+          <Route path="/parent-login" element={<ConditionRoute type="public"><ParentLogin /></ConditionRoute>} />
+          <Route path="/parent-signup" element={<ConditionRoute type="public"><ParentSignup /></ConditionRoute>} />
+          <Route path="/parent-home" element={<ConditionRoute type="public"><ParentHomepage /></ConditionRoute>} />
+          <Route path="/student-profile" element={<ConditionRoute type="public"><StudentProfile /></ConditionRoute>} />
+          <Route path="/bus-details" element={<ConditionRoute type="public"><BusDetails /></ConditionRoute>} />
+          <Route path="/bus-schedule" element={<ConditionRoute type="public"><BusSchedule /></ConditionRoute>} />
+          <Route path="/bus-attendance" element={<ConditionRoute type="public"><BusAttendance /></ConditionRoute>} />
+          <Route path="/bus-tracking" element={<ConditionRoute type="public"><BusTracking /></ConditionRoute>} />
+          <Route path="/teacher-generatecard" element={<ConditionRoute type="public"><GenerateReport /></ConditionRoute>} />
+          <Route path="/LeaveForm" element={<ConditionRoute type="public"><LeaveForm /></ConditionRoute>} />
+          <Route path="/leaveDetails" element={<ConditionRoute type="public"><LeaveDetails /></ConditionRoute>} />
+          <Route path="/teacherleaveappliedlist" element={<ConditionRoute type="public"><Teacherleaveappliedlist /></ConditionRoute>} />
+          {/* <Route path="/Studentleavestatus" element={<ConditionRoute type="public"><Studentleavestatus /></ConditionRoute>} /> */}
+          <Route path="/payrollList" element={<ConditionRoute type="public"><PayrollList /></ConditionRoute>} />
+          <Route path="/PayrolllistGenerate" element={<ConditionRoute type="public"><PayrolllistGenerate /></ConditionRoute>} />
+          <Route path="/Payrollfilter" element={<ConditionRoute type="public"><PayrollList /></ConditionRoute>} />
           {/* Redirecting to 404 page*/}
           <Route path="*" element={<ConditionRoute type="public"><Page404 /></ConditionRoute>} />
+
+
+
+
+          <Route path="/employeeleaveEdit/:id" element={<ConditionRoute type="public"><EmployeeleaveEdit /></ConditionRoute>} />
+          <Route path="/leaveApproval/:id" element={<ConditionRoute type="public"><LeaveApproval /></ConditionRoute>} />
+          <Route path="/PayrollForm" element={<ConditionRoute type="public"><PayrollForm /></ConditionRoute>} />
+          <Route path='/LeaveSchedule' element={<ConditionRoute type="public"><LeaveSchedule /></ConditionRoute>} />
+          <Route path='/employeeAttendance' element={<ConditionRoute type="public"><EmployeeAttendance /></ConditionRoute>} />
+
+
+
         </Routes>
       </BrowserRouter>
     </div>

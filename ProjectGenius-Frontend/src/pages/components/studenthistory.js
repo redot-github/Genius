@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faHistory, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { getAllVehicle } from "../../actions/adminAction";
+
+
 
 const AdmissionFormFinal = (props) => {
   const { formValue, setFormValue, handlePreClick, handleSubmit, errors } = props
   //Destructuring of formValue
   const { admissiongrade, previousgrade, previousschoolhistory, emergencyrelationname, bloodgroup, vaccination, emergencycontactNumber, signature } = formValue;
   //Ensure submit button disable
-  const isButtonDisable = (admissiongrade !== "" && previousgrade !== "" && previousschoolhistory !== "" && emergencyrelationname !== "" && bloodgroup !== "" && vaccination !== "" && emergencycontactNumber.length === 10);
+  const isButtonDisable = (admissiongrade !== "" && previousgrade !== "" && previousschoolhistory !== "" && emergencyrelationname !== "" && bloodgroup !== "" && vaccination !== "" && emergencycontactNumber.length === 10 );
   //input fields validating states
   const [onFocusPrevSchool, setFocusOnPrevSchool] = useState(false)
   const [onFocusRelNam, setFocusOnRelNam] = useState(false)
   const [onFocusRelNum, setFocusOnRelNum] = useState(false)
   const [onFocusVaccination, setFocusOnVaccination] = useState(false)
-  //state for validating signature
+ 
+   //state for validating signature
   const [fileErrorMsg, setFileErrorMsg] = useState('');
   const triggerPreviousForm = () => {
+    
     handlePreClick()
   }
   const triggerSubmitAction = () => {
@@ -23,8 +28,13 @@ const AdmissionFormFinal = (props) => {
   }
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormValue({ ...formValue, [name]: value });
-  }
+    if (name === "vehicleRoute") {
+      setFormValue({ ...formValue, vehicleRoute: value });
+    } else {
+      setFormValue({ ...formValue, [name]: value });
+    }
+  };
+  
   const handleFileChange = (event) => {
     const { name, files } = event.target;
     const supportedExtension = [".jpg", ".png", ".jpeg", ".gif", ".pdf", ".doc"]
@@ -54,6 +64,49 @@ const AdmissionFormFinal = (props) => {
     }
     return null;
   };
+  /////////////////////////////////////////////
+
+  const [VehicleList, setVehicleList] = useState([]);
+  // const [Vehicleregnumlist, setVehicleregnumlist] = useState([])
+  const handleVehicleList = async () => {
+    try {
+      const respinsing = await getAllVehicle();
+      const data = respinsing.result;
+      setVehicleList(data);
+      // setVehicleregnumlist(data);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    handleVehicleList();
+  }, []);
+
+  const [SelectedBusRoute, setSelectedBusRoute] = useState({
+    vehicleRoute: "",
+    vehicleRegisterNumber: "",
+  });
+
+  const handlerouteselection = (e) => {
+    const first = e.target.value;
+    const second = VehicleList.find(
+      (vehicleRoute) => vehicleRoute.vehicleRegisterNumber === first
+    );
+
+  setFormValue({
+    ...formValue,
+    vehicleRegisterNumber: first,
+    vehicleRoute: second.vehicleRoute,
+  });
+};
+useEffect(() => {
+  setSelectedBusRoute({
+    vehicleRoute: formValue.vehicleRoute,
+    vehicleRegisterNumber: formValue.vehicleRegisterNumber,
+  });
+}, [formValue]);
+
   return (
     // Student History form JSX
     <>
@@ -171,6 +224,39 @@ const AdmissionFormFinal = (props) => {
             <span className='text-error'>{fileErrorMsg}</span>
             {signature === "" && fileErrorMsg === "" && <span className='text-error'>*No file uploaded</span>}
           </div>
+
+          <div className="field-box">
+            <label htmlFor="">
+              Bus Stop<sup>*</sup>
+            </label>
+            <select
+              name="vehicleRoute"
+              value={SelectedBusRoute.vehicleRegisterNumber}
+              onChange={handlerouteselection}
+            >
+              <option value=""></option>
+              {VehicleList.map((route) => (
+                <option
+                  key={route.vehicleRegisterNumber}
+                  value={route.vehicleRegisterNumber}
+                >
+                  {route.vehicleRoute}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="field-box">
+            <label htmlFor="">
+              Bus Id<sup>*</sup>
+            </label>
+            <input
+              name="vehicleRegisterNumber"
+              value={SelectedBusRoute.vehicleRegisterNumber}
+            />
+          </div>
+        
+
         </form>
       </div>
       <div className="btnn">

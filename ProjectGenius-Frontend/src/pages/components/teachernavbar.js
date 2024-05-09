@@ -14,6 +14,8 @@ const TeacherHeader = () => {
   //state
   const [teacherInfo, setTeacherInfo] = useState("");
   const [navPop, setNavPop] = useState(false);
+
+  console.log(openMenu,'open...', toggleMenu,'toggle...');
   
   const navigate = useNavigate()
 
