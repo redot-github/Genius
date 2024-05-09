@@ -22,7 +22,7 @@ const Attendance = (props) => {
     } catch (err) {
       console.log('Error', err);
     }
-  };
+  }
   
 
   useEffect (() => {
