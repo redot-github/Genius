@@ -5,9 +5,6 @@ import ParentNavBar from "./components/parentnavbar";
 
 const BusDetails = () => {
   return (
-
-
-    
     <div className="bus-details-page">
       <ParentHeader headerTitle={'Bus details'} />
       <div className="bus-details-container">
