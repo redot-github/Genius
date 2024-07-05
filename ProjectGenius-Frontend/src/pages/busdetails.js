@@ -6,9 +6,9 @@ import ParentNavBar from "./components/parentnavbar";
 const BusDetails = () => {
   return (
     <div className="bus-details-page">
-      <ParentHeader headerTitle={'Bus details'} />
+      <ParentHeader headerTitle={"Bus details"} />
       <div className="bus-details-container">
-      <div className="bus-details-card">
+        <div className="bus-details-card">
           <h2>Bus Details</h2>
           <div className="details-card-container">
             <div>
@@ -26,7 +26,10 @@ const BusDetails = () => {
           <h2>Bus-Incharge Info</h2>
           <div className="bus-incharge-info">
             <div className="bus-incharge-img">
-              <img src="https://xsgames.co/randomusers/assets/avatars/male/37.jpg" alt="driver" />
+              <img
+                src="https://xsgames.co/randomusers/assets/avatars/male/37.jpg"
+                alt="driver"
+              />
             </div>
             <div className="bus-incharge-details">
               <div className="bus-incharge-name">
@@ -42,7 +45,10 @@ const BusDetails = () => {
           </div>
           <div className="bus-incharge-info">
             <div className="bus-incharge-img">
-              <img src="https://xsgames.co/randomusers/assets/avatars/female/73.jpg" alt="attendant" />
+              <img
+                src="https://xsgames.co/randomusers/assets/avatars/female/73.jpg"
+                alt="attendant"
+              />
             </div>
             <div className="bus-incharge-details">
               <div className="bus-incharge-name">
